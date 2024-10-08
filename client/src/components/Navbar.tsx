@@ -8,14 +8,16 @@ import { Avatar, AvatarImage } from "./ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
 import { Separator } from "@radix-ui/react-separator";
+// import { useCartStore } from "@/store/useCartStore";
+import { useUserStore } from "@/store/useUserStore";
 const Navbar = () => {
-    const admin = true;
-    const loading = false;
+    const { user, loading, logout} = useUserStore();
+
     return (
         <div className="max-w-7xl mx-auto">
             <div className="flex items-center justify-between h-14">
                 <Link to="/" >
-                    <h1 className="font-bold md:font-extrabold text-2xl">Platter</h1>
+                    <h1 className="font-bold md:font-extrabold text-2xl">Platter </h1>
                 </Link>
                 <div className="hidden md:flex items-center gap-10">
                     <div className="hidden md:flex items-center gap-6">
@@ -25,7 +27,7 @@ const Navbar = () => {
 
 
                         {
-                            admin && (
+                            user?.admin && (
                                 <Menubar>
                                     <MenubarMenu>
                                         <MenubarTrigger>Dashboard</MenubarTrigger>
@@ -88,10 +90,7 @@ const Navbar = () => {
                                     Please wait
                                 </Button>
                             ) : (
-                                <Button
-                                    //   onClick={logout}
-                                    className="bg-orange hover:bg-hoverOrange"
-                                >
+                                <Button onClick={logout} className="bg-orange hover:bg-hoverOrange">
                                     Logout
                                 </Button>
                             )}
@@ -111,11 +110,8 @@ const Navbar = () => {
 
 export default Navbar
 const MobileNavbar = () => {
-    // const { user, logout, loading } = useUserStore();
+    const { user, logout, loading } = useUserStore();
     // const {setTheme} = useThemeStore();
-    const user = { admin: true };
-    const loading = false;
-    const admin = true;
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -167,35 +163,34 @@ const MobileNavbar = () => {
                         <ShoppingCart />
                         <span>Cart (0)</span>
                     </Link>
-                    
-                    {/* {user?.admin && ( */}
+
                     {user?.admin && (
-                    // user?
-                    <>
-                        <Link
-                            to="/admin/menu"
-                            className="flex items-center gap-4 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer hover:text-gray-900 font-medium"
-                        >
-                            <SquareMenu />
-                            <span>Menu</span>
-                        </Link>
-                        <Link
-                            to="/admin/restaurant"
-                            className="flex items-center gap-4 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer hover:text-gray-900 font-medium"
-                        >
-                            <UtensilsCrossed />
-                            <span>Restaurant</span>
-                        </Link>
-                        <Link
-                            to="/admin/orders"
-                            className="flex items-center gap-4 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer hover:text-gray-900 font-medium"
-                        >
-                            <PackageCheck />
-                            <span>Restaurant Orders</span>
-                        </Link>
-                    </>
-                     )} 
-                                  
+
+                        <>
+                            <Link
+                                to="/admin/menu"
+                                className="flex items-center gap-4 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer hover:text-gray-900 font-medium"
+                            >
+                                <SquareMenu />
+                                <span>Menu</span>
+                            </Link>
+                            <Link
+                                to="/admin/restaurant"
+                                className="flex items-center gap-4 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer hover:text-gray-900 font-medium"
+                            >
+                                <UtensilsCrossed />
+                                <span>Restaurant</span>
+                            </Link>
+                            <Link
+                                to="/admin/orders"
+                                className="flex items-center gap-4 hover:bg-gray-200 px-3 py-2 rounded-lg cursor-pointer hover:text-gray-900 font-medium"
+                            >
+                                <PackageCheck />
+                                <span>Restaurant Orders</span>
+                            </Link>
+                        </>
+                    )}
+
                 </SheetDescription>
                 <SheetFooter className="flex flex-col gap-4">
                     <div className="flex flex-row items-center gap-2">

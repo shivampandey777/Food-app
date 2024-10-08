@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SignupInputState, userSignupSchema } from "@/schema/userSchema"
+import { useUserStore } from "@/store/useUserStore"
 import { Separator } from "@radix-ui/react-separator"
 import { Loader2, LockKeyhole, Mail, PhoneOutgoing, User } from "lucide-react"
 import { ChangeEvent, FormEvent, useState } from "react" // Import ChangeEvent from react
-import { Link } from "react-router-dom"
+import { Link, useNavigate  } from "react-router-dom"
 
 
 // type SignupInputState = {
@@ -21,11 +22,13 @@ const Signup = () => {
     contact: ""
   });
   const [errors, setErrors] = useState<Partial<SignupInputState>>({});
+  const {signup, loading}  = useUserStore();
+  const navigate = useNavigate();
   const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInput({ ...input, [name]: value })
   }
-  const loginSubmitHandler = (e: FormEvent) => {
+  const loginSubmitHandler = async (e: FormEvent) => {
     e.preventDefault();
     //form validation check
     const result = userSignupSchema.safeParse(input);
@@ -36,10 +39,12 @@ const Signup = () => {
       return;
     }
     //login api implimentation start here
-    console.log(input)
-
+      await signup(input);
+      navigate("/verify-email");
+   
   }
-  const loading = false;
+  
+  
   return (
     <div className="flex items-center justify-center min-h-screen w-full ">
       <form onSubmit={loginSubmitHandler} className="md:p-8 w-full max-w-md rounded-lg md:border border-gray-200 mx-4">
