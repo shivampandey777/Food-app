@@ -21,7 +21,6 @@ import { useUserStore } from './store/useUserStore';
 import { Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import Loading from './components/Loading';
-import { useTheme } from 'next-themes';
 import { useThemeStore } from './store/useThemeStore';
 
 const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
