@@ -1,54 +1,72 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MenuFormSchema, menuSchema } from "@/schema/MenuSchema";
-
 import { Loader2, Plus } from "lucide-react";
-import { FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import EditMenu from "./EditMenu";
+import { MenuFormSchema, menuSchema } from "@/schema/MenuSchema";
+import { useMenuStore } from "@/store/useMenuStore";
+import { useRestaurantStore } from "@/store/useRestaurantStore";
+
 
 const AddMenu = () => {
-    const [input, setInput] = useState<MenuFormSchema>({
-        name: "",
-        description: "",
-        price: 0,
-        image: undefined,
-      });
-      const [open, setOpen] = useState<boolean>(false);
-      const [error, setError] = useState<Partial<MenuFormSchema>>({});
-      const [editOpen, setEditOpen] = useState<boolean>(false);
-      const [selectedMenu, setSelectedMenu] = useState<any>();
-      const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, type } = e.target;
-        setInput({ ...input, [name]: type === "number" ? Number(value) : value });
-      };
-      const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const result = menuSchema.safeParse(input);
-        if (!result.success) {
-          const fieldErrors = result.error.formErrors.fieldErrors;
-          setError(fieldErrors as Partial<MenuFormSchema>);
-          return;
-        }
-    
+  const [input, setInput] = useState<MenuFormSchema>({
+    name: "",
+    description: "",
+    price: 0,
+    image: undefined,
+  });
+  const [open, setOpen] = useState<boolean>(false);
+  const [editOpen, setEditOpen] = useState<boolean>(false);
+  const [selectedMenu, setSelectedMenu] = useState<any>();
+  const [error, setError] = useState<Partial<MenuFormSchema>>({});
+  const { loading, createMenu } = useMenuStore();
+  const { restaurant } = useRestaurantStore();
+
+  const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type } = e.target;
+    setInput({ ...input, [name]: type === "number" ? Number(value) : value });
+  };
+
+  const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const result = menuSchema.safeParse(input);
+    if (!result.success) {
+      const fieldErrors = result.error.formErrors.fieldErrors;
+      setError(fieldErrors as Partial<MenuFormSchema>);
+      return;
+    }
+    // api ka kaam start from here
+    try {
+      const formData = new FormData();
+      formData.append("name", input.name);
+      formData.append("description", input.description);
+      formData.append("price", input.price.toString());
+      if (input.image) {
+        formData.append("image", input.image);
       }
-      const loading = false;
-      const restaurant = true;
-      const menu = [{
-        name:"Burger",
-        description:"Delicious Burger",
-        price:80,
-        image:"",
-      }]
-     
+      await createMenu(formData);
+    } catch (error) {
+      
+    }
+
+  };
   return (
-    <div className="max-w-7xl mx-auto my-10">
-      <div className="flex  justify-between">
-           <h1 className="font-bold  md:font-extrabold text-lg md:text-2xl ">
-            Avaliable Menus
-           </h1>
-           <Dialog open={open} onOpenChange={setOpen}>
+    <div className="max-w-6xl mx-auto my-10">
+      <div className="flex justify-between">
+        <h1 className="font-bold md:font-extrabold text-lg md:text-2xl">
+          Available Menus
+        </h1>
+        <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger>
             <Button className="bg-orange hover:bg-hoverOrange">
               <Plus className="mr-2" />
@@ -141,8 +159,8 @@ const AddMenu = () => {
             </form>
           </DialogContent>
         </Dialog>
-        </div>
-        {restaurant? menu.map((menu: any, idx: number) => (
+      </div>
+      {restaurant?.menus.map((menu: any, idx: number) => (
         <div key={idx} className="mt-6 space-y-4">
           <div className="flex flex-col md:flex-row md:items-center md:space-x-4 md:p-4 p-2 shadow-md rounded-lg border">
             <img
@@ -171,15 +189,14 @@ const AddMenu = () => {
             </Button>
           </div>
         </div>
-      )) : ""}
-       <EditMenu
+      ))}
+      <EditMenu
         selectedMenu={selectedMenu}
         editOpen={editOpen}
-        setEditOpen={setEditOpen}        
+        setEditOpen={setEditOpen}
       />
     </div>
-  )
-}
-
+  );
+};
 
 export default AddMenu;

@@ -30,7 +30,7 @@ export const getOrders = async (req: Request, res: Response) => {
             orders
         });
     } catch (error) {
-        console.log(error);
+      
         return res.status(500).json({ success: false, message: "Internal server error" });
     }
 }
@@ -79,8 +79,8 @@ export const createCheckoutSession = async (req: Request, res: Response) => {
             session
         });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Internal server error" })
+       
+        return res.status(500).json({ message: "session Internal server error" })
 
     }
 }

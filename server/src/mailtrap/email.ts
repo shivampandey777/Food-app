@@ -12,7 +12,7 @@ export const sendVerificationEmail = async (email: string, verificationToken: st
             category: "Email Verification",
         })
     } catch (error) {
-        console.log(error);
+       
         throw new Error("failed to send  verification email");
 
     }
@@ -32,7 +32,7 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
            }
         })
     } catch (error) {
-        console.log(error);
+       
         throw new Error("failed to send  Welcome email");
 
     }
@@ -50,7 +50,7 @@ export const sendPasswordResetEmail = async (email: string, resetUrl: string) =>
           category: "Reset Password ",
         })
     } catch (error) {
-        console.log(error);
+        
         throw new Error("Failed to send Reset  Password reset success email");
 
     }
@@ -68,7 +68,7 @@ export const sendResetSuccessEmail = async (email: string) => {
           category: "Password Reset",
         })
     } catch (error) {
-        console.log(error);
+       
         throw new Error("failed to send  Welcome email");
 
     }

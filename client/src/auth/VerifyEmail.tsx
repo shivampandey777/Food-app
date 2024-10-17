@@ -36,7 +36,7 @@ const VerifyEmail = () => {
     try {
       await verifyEmail(verificationCode);
       navigate("/");
-    } catch (error) {console.log(error);
+    } catch (error) {
     }
   };
 

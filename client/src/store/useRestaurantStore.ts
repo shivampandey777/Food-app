@@ -1,15 +1,15 @@
-// import { Orders } from "@/types/orderType";
-// import { MenuItem, RestaurantState } from "@/types/restaurantType";
+import { Orders } from "@/types/orderType";
+import { MenuItem, RestaurantState } from "@/types/restaurantType";
 import axios from "axios";
 import { toast } from "sonner";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-const API_END_POINT = "https://localhost:8000/api/v1/restaurant";
+const API_END_POINT = "http://localhost:8000/api/v1/restaurant";
 axios.defaults.withCredentials = true;
 
 
-export const useRestaurantStore = create<any>()(persist((set, get) => ({
+export const useRestaurantStore = create<RestaurantState>()(persist((set, get) => ({
     loading: false,
     restaurant: null,
     searchedRestaurant: null,
@@ -29,8 +29,8 @@ export const useRestaurantStore = create<any>()(persist((set, get) => ({
                 set({ loading: false });
             }
         } catch (error: any) {
-            toast.error(error.response.data.message);
             set({ loading: false });
+            toast.error(error.response.data.message);
         }
     },
     getRestaurant: async () => {
@@ -41,10 +41,10 @@ export const useRestaurantStore = create<any>()(persist((set, get) => ({
                 set({ loading: false, restaurant: response.data.restaurant });
             }
         } catch (error: any) {
+            set({ loading: false });
             if (error.response.status === 404) {
                 set({ restaurant: null });
             }
-            set({ loading: false });
         }
     },
     updateRestaurant: async (formData: FormData) => {
@@ -56,12 +56,12 @@ export const useRestaurantStore = create<any>()(persist((set, get) => ({
                 }
             });
             if (response.data.success) {
-                toast.success(response.data.message);
                 set({ loading: false });
+                toast.success(response.data.message);
             }
         } catch (error: any) {
-            toast.error(error.response.data.message);
             set({ loading: false });
+            toast.error(error.response.data.message);
         }
     },
     searchRestaurant: async (searchText: string, searchQuery: string, selectedCuisines: any) => {
@@ -81,73 +81,73 @@ export const useRestaurantStore = create<any>()(persist((set, get) => ({
             set({ loading: false });
         }
     },
-    // addMenuToRestaurant: (menu: any) => {
-    //     set((state: any) => ({
-    //         restaurant: state.restaurant ? { ...state.restaurant, menus: [...state.restaurant.menus, menu] } : null,
-    //     }))
-    // },
-    // updateMenuToRestaurant: (updatedMenu: any) => {
-    //     set((state: any) => {
-            
-    //         if (state.restaurant) {
-    //             const updatedMenuList = state.restaurant.menus.map((menu: any) => menu._id === updatedMenu._id ? updatedMenu : menu);
-    //             return {
-    //                 restaurant: {
-    //                     ...state.restaurant,
-    //                     menus: updatedMenuList
-    //                 }
-    //             }
-    //         }
-    //         // if state.restaruant is undefined then return state
-    //         return state;
-    //     })
-    // },
-    // setAppliedFilter: (value: string) => {
-    //     set((state) => {
-    //         const isAlreadyApplied = state.appliedFilter.includes(value);
-    //         const updatedFilter = isAlreadyApplied ? state.appliedFilter.filter((item) => item !== value) : [...state.appliedFilter, value];
-    //         return { appliedFilter: updatedFilter }
-    //     })
-    // },
-    // resetAppliedFilter: () => {
-    //     set({ appliedFilter: [] })
-    // },
-    // getSingleRestaurant: async (restaurantId: string) => {
-    //     try {
-    //         const response = await axios.get(`${API_END_POINT}/${restaurantId}`);
-    //         if (response.data.success) {
-    //             set({ singleRestaurant: response.data.restaurant })
-    //         }
-    //     } catch (error) { }
-    // },
-    // getRestaurantOrders: async () => {
-    //     try {
-    //         const response = await axios.get(`${API_END_POINT}/order`);
-    //         if (response.data.success) {
-    //             set({ restaurantOrder: response.data.orders });
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // },
-    // updateRestaurantOrder: async (orderId: string, status: string) => {
-    //     try {
-    //         const response = await axios.put(`${API_END_POINT}/order/${orderId}/status`, { status }, {
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-    //         if (response.data.success) {
-    //             const updatedOrder = get().restaurantOrder.map((order: Orders) => {
-    //                 return order._id === orderId ? { ...order, status: response.data.status } : order;
-    //             })
-    //             set({ restaurantOrder: updatedOrder });
-    //             toast.success(response.data.message);
-    //         }
-    //     } catch (error: any) {
-    //         toast.error(error.response.data.message);
-    //     }
-    // }
+    addMenuToRestaurant: (menu: MenuItem) => {
+        set((state: any) => ({
+            restaurant: state.restaurant ? { ...state.restaurant, menus: [...state.restaurant.menus, menu] } : null,
+        }))
+    },
+    updateMenuToRestaurant: (updatedMenu: MenuItem) => {
+        set((state: any) => {
+
+            if (state.restaurant) {
+                const updatedMenuList = state.restaurant.menus.map((menu: any) => menu._id === updatedMenu._id ? updatedMenu : menu);
+                return {
+                    restaurant: {
+                        ...state.restaurant,
+                        menus: updatedMenuList
+                    }
+                }
+            }
+            // if state.restaruant is undefined then return state
+            return state;
+        })
+    },
+    setAppliedFilter: (value: string) => {
+        set((state) => {
+            const isAlreadyApplied = state.appliedFilter.includes(value);
+            const updatedFilter = isAlreadyApplied ? state.appliedFilter.filter((item) => item !== value) : [...state.appliedFilter, value];
+            return { appliedFilter: updatedFilter }
+        })
+    },
+    resetAppliedFilter: () => {
+        set({ appliedFilter: [] })
+    },
+    getSingleRestaurant: async (restaurantId: string) => {
+        try {
+            const response = await axios.get(`${API_END_POINT}/${restaurantId}`);
+            if (response.data.success) {
+                set({ singleRestaurant: response.data.restaurant })
+            }
+        } catch (error) { }
+    },
+    getRestaurantOrders: async () => {
+        try {
+            const response = await axios.get(`${API_END_POINT}/order`);
+            if (response.data.success) {
+                set({ restaurantOrder: response.data.orders });
+            }
+        } catch (error) {
+          
+        }
+    },
+    updateRestaurantOrder: async (orderId: string, status: string) => {
+        try {
+            const response = await axios.put(`${API_END_POINT}/order/${orderId}/status`, { status }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.data.success) {
+                const updatedOrder = get().restaurantOrder.map((order: Orders) => {
+                    return order._id === orderId ? { ...order, status: response.data.status } : order;
+                })
+                set({ restaurantOrder: updatedOrder });
+                toast.success(response.data.message);
+            }
+        } catch (error: any) {
+            toast.error(error.response.data.message);
+        }
+    }
 
 }), {
     name: 'restaurant-name',

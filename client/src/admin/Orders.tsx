@@ -1,57 +1,25 @@
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useRestaurantStore } from "@/store/useRestaurantStore";
+import { useEffect } from "react";
 
 const Orders = () => {
-    const restaurantOrder = [
-        {
-          _id: "1",
-          deliveryDetails: {
-            name: "John Doe",
-            address: "123, 4th Block, 5th Cross, Bangalore",
-          },
-          totalAmount: 1000,
-          status: "pending",
-        },
-        {
-          _id: "2",
-          deliveryDetails: {
-            name: "Jane Doe",
-            address: "456, 4th Block, 5th Cross, Bangalore",
-          },
-          totalAmount: 1500,
-          status: "confirmed",
-        },
-        {
-          _id: "3",
-          deliveryDetails: {
-            name: "John Doe",
-            address: "123, 4th Block, 5th Cross, Bangalore",
-          },
-          totalAmount: 1000,
-          status: "preparing",
-        },
-        {
-          _id: "4",
-          deliveryDetails: {
-            name: "Jane Doe",
-            address: "456, 4th Block, 5th Cross, Bangalore",
-          },
-          totalAmount: 1500,
-          status: "outForDelivery",
-        },
-        {
-          _id: "5",
-          deliveryDetails: {
-            name: "John Doe",
-            address: "123, 4th Block, 5th Cross, Bangalore",
-          },
-          totalAmount: 1000,
-          status: "delivered",
-        },
-      ];
-    const handleStatusChange = async (id: string, status: string) => {
-        // await updateRestaurantOrder(id, status);
-      };
+  const { restaurantOrder, getRestaurantOrders, updateRestaurantOrder } =
+    useRestaurantStore();
+
+  const handleStatusChange = async (id: string, status: string) => {
+    await updateRestaurantOrder(id, status);
+  };
+  useEffect(() => {
+    getRestaurantOrders();
+  }, []);
   return (
     <div className="max-w-6xl mx-auto py-10 px-6">
       <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-10">
@@ -78,7 +46,7 @@ const Orders = () => {
               <Label className="block text-sm font-medium text-gray-700 dark:text-gray300 mb-2">
                 Order Status
               </Label>
-              <Select 
+              <Select
                 onValueChange={(newStatus) =>
                   handleStatusChange(order._id, newStatus)
                 }
@@ -108,7 +76,7 @@ const Orders = () => {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Orders
+export default Orders;

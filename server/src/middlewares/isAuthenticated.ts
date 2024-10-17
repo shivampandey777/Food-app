@@ -32,7 +32,7 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
         next();
 
     } catch (error) {
-        console.log(error);
+        
         return res.status(500).json({ message: "Internal server error" });
 
     }
