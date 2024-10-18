@@ -1,8 +1,6 @@
 import path from "path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
-// vite.config.js
-import { splitVendorChunkPlugin } from 'vite'
 
 export default defineConfig({
   plugins: [react()],
